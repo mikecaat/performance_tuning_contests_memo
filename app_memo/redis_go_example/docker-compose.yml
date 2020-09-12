@@ -1,0 +1,21 @@
+version: '3'
+services:
+  go_app:
+    image: golang:1.14-alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/app:/go/src/app
+    working_dir: /go/src/app
+    entrypoint: "go run main.go"
+    depends_on:
+      - redis
+    tty: true
+
+  redis:
+    image: redis:5.0.9
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/etc/redis.conf:/etc/redis.conf
+    entrypoint: "redis-server /etc/redis.conf"
