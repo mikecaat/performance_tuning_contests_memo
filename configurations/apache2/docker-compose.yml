@@ -1,0 +1,17 @@
+version: '3'
+services:
+  reverse_proxy:
+    image: kstaken/apache2
+    volumes:
+      - ./reverse_proxy/var/www:/var/www
+      - ./reverse_proxy/etc/apache2/sites-available:/etc/apache2/sites-available
+    ports:
+      - "10080:80"
+  app1:
+    image: kstaken/apache2
+    volumes:
+      - ./app1/var/www:/var/www
+  app2:
+    image: kstaken/apache2
+    volumes:
+      - ./app2/var/www:/var/www

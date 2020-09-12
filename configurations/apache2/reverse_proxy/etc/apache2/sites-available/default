@@ -1,0 +1,25 @@
+# load balancerの設定
+
+# https://httpd.apache.org/docs/2.2/ja/mod/mod_proxy.html
+# https://httpd.apache.org/docs/2.2/ja/mod/mod_proxy_balancer.html
+
+LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
+LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
+LoadModule proxy_balancer_module /usr/lib/apache2/modules/mod_proxy_balancer.so
+
+<VirtualHost *:80>
+    DocumentRoot /var/www
+#   ProxyPass / http://app1:80/
+#   ProxyPassReverse / http://app1:80/
+</VirtualHost>
+
+<Proxy balancer://mycluster>
+    BalancerMember http://app1:80 loadfactor=20
+    BalancerMember http://app2:80 loadfactor=20
+
+    #requestごと, 他にもbytraffic, bybusynessもある
+    ProxySet lbmethod=byrequests
+</Proxy>
+
+ProxyPass / balancer://mycluster
+ProxyPassReverse / balancer://mycluster
